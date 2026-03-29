@@ -1,0 +1,632 @@
+
+          <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Search Flights - SkyHigh Airlines</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body {
+        background: url("https://tse1.mm.bing.net/th/id/OIP.vUs6pNzK5GUinjL-WaoP6AHaEP?rs=1&pid=ImgDetMain&o=7&rm=3") no-repeat center center/cover;
+        min-height: 100vh;
+        padding: 20px;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Dark overlay */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 20, 40, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 1;
+    }
+
+
+    .navbar {
+        background: rgba(10, 36, 64, 0.95);
+        padding: 15px 40px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        font-size: 22px;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+
+    .navbar a:hover {
+        color: #ff6b00;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 25px;
+    }
+
+    .nav-links a {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 100px auto 40px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeDown 0.6s ease;
+    }
+
+    @keyframes fadeDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header h1 {
+        color: white;
+        font-size: 42px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .header p {
+        color: #e0e0e0;
+        font-size: 18px;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+    }
+
+    .search-card {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0px 10px 40px rgba(0,0,0,0.3);
+        margin-bottom: 40px;
+        animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-card h3 {
+        color: #0a2440;
+        margin-bottom: 25px;
+        font-size: 22px;
+        text-align: center;
+    }
+
+    .search-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-group input {
+        padding: 14px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s;
+        background: #f9f9f9;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .search-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 14px 30px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s;
+        height: 52px;
+    }
+
+    .search-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .search-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .search-btn.loading .btn-text {
+        display: none;
+    }
+
+    .search-btn.loading .spinner {
+        display: block;
+    }
+
+    .results-header {
+        color: white;
+        margin-bottom: 20px;
+        font-size: 20px;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+        display: none;
+    }
+
+    .results-header.show {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .flight-list {
+        display: grid;
+        gap: 20px;
+    }
+
+    .flight-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 25px;
+        align-items: center;
+        transition: all 0.3s;
+        animation: slideIn 0.5s ease;
+        border: 2px solid transparent;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .flight-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 12px 35px rgba(0,0,0,0.3);
+        border-color: #667eea;
+    }
+
+    .flight-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .flight-details {
+        flex: 1;
+    }
+
+    .flight-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0a2440;
+        margin-bottom: 8px;
+    }
+
+    .airline-name {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .route {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .route-arrow {
+        color: #ff6b00;
+        font-size: 20px;
+    }
+
+    .flight-meta {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .flight-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .book-btn {
+        background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+        color: white;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+
+    .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(255, 107, 0, 0.4);
+    }
+
+    .no-results {
+        background: white;
+        padding: 60px 40px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+        animation: fadeIn 0.5s ease;
+    }
+
+    .no-results-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .no-results h3 {
+        color: #0a2440;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .no-results p {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .loading-state {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+
+    .loading-state.show {
+        display: block;
+    }
+
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    .loading-state p {
+        color: white;
+        font-size: 18px;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+    }
+
+    @media (max-width: 768px) {
+        .navbar {
+            padding: 15px 20px;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .container {
+            margin-top: 80px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+        }
+
+        .search-card {
+            padding: 25px 20px;
+        }
+
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+
+        .flight-card {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .flight-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+        }
+
+        .book-btn {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="index.html">✈️ SkyHigh Airlines</a>
+    <div class="nav-links">
+        <a href="index.html">🏠 Home</a>
+       
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>🌍 Search Flights</h1>
+        <p>Find the perfect flight for your journey</p>
+    </div>
+
+    <div class="search-card">
+        <h3>🔍 Where do you want to go?</h3>
+        <div class="search-form">
+            <div class="form-group">
+                <label for="source">🛫 From</label>
+                <input 
+                    type="text" 
+                    id="source" 
+                    placeholder="Enter departure city"
+                    list="cities"
+                >
+            </div>
+            <div class="form-group">
+                <label for="destination">🛬 To</label>
+                <input 
+                    type="text" 
+                    id="destination" 
+                    placeholder="Enter destination city"
+                    list="cities"
+                >
+            </div>
+            <button class="search-btn" id="searchBtn" onclick="searchFlights()">
+                <span class="btn-text">🔎 Search Flights</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+
+        <datalist id="cities">
+            <option value="India">
+            <option value="USA">
+            <option value="UK">
+            <option value="France">
+            <option value="Germany">
+            <option value="Japan">
+            <option value="Australia">
+            <option value="UAE">
+            <option value="Singapore">
+            <option value="Canada">
+        </datalist>
+    </div>
+
+    <div class="loading-state" id="loadingState">
+        <div class="loading-spinner"></div>
+        <p>Searching for flights...</p>
+    </div>
+
+    <div class="results-header" id="resultsHeader">
+        <span id="resultsCount">0</span> flights found
+    </div>
+
+    <div id="flights" class="flight-list"></div>
+</div>
+
+<script>
+async function searchFlights() {
+    const source = document.getElementById("source").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    const flightBox = document.getElementById("flights");
+    const loadingState = document.getElementById("loadingState");
+    const resultsHeader = document.getElementById("resultsHeader");
+    const searchBtn = document.getElementById("searchBtn");
+
+    // Validation
+    if (!source || !destination) {
+        alert("⚠️ Please enter both departure and destination cities");
+        return;
+    }
+
+    if (source.toLowerCase() === destination.toLowerCase()) {
+        alert("⚠️ Departure and destination cities must be different");
+        return;
+    }
+
+    // Clear previous results
+    flightBox.innerHTML = "";
+    resultsHeader.classList.remove("show");
+    
+    // Show loading
+    loadingState.classList.add("show");
+    searchBtn.disabled = true;
+    searchBtn.classList.add("loading");
+
+    try {
+        const res = await fetch(`http://localhost:5000/flights?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}`);
+        
+        if (!res.ok) {
+            throw new Error("Failed to fetch flights");
+        }
+
+        const flights = await res.json();
+
+        // Hide loading
+        loadingState.classList.remove("show");
+
+        if (flights.length === 0) {
+            flightBox.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon">✈️</div>
+                    <h3>No Flights Found</h3>
+                    <p>We couldn't find any flights from <strong>${source}</strong> to <strong>${destination}</strong>.</p>
+                    <p style="margin-top: 10px;">Try searching for different cities or check back later.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Show results count
+        document.getElementById("resultsCount").textContent = flights.length;
+        resultsHeader.classList.add("show");
+
+        // Display flights
+        flights.forEach((flight, index) => {
+            setTimeout(() => {
+                const card = document.createElement("div");
+                card.className = "flight-card";
+                card.innerHTML = `
+                    <div class="flight-icon">✈️</div>
+                    <div class="flight-details">
+                        <div class="flight-number">${flight.flight_no}</div>
+                        <div class="airline-name">${flight.airline}</div>
+                        <div class="route">
+                            <span>${flight.source}</span>
+                            <span class="route-arrow">→</span>
+                            <span>${flight.destination}</span>
+                        </div>
+                        <div class="flight-meta">
+                            <span>🕒 ${flight.departure_time}</span>
+                            <span>💺 ${flight.seats_available} seats available</span>
+                        </div>
+                    </div>
+                    <a href="booking.html?flight_no=${flight.flight_no}&source=${flight.source}&destination=${flight.destination}" class="book-btn">
+                        Book Now →
+                    </a>
+                `;
+                flightBox.appendChild(card);
+            }, index * 100); // Stagger animation
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        loadingState.classList.remove("show");
+        flightBox.innerHTML = `
+            <div class="no-results">
+                <div class="no-results-icon">❌</div>
+                <h3>Connection Error</h3>
+                <p>Unable to connect to the server. Please make sure the backend is running.</p>
+                <p style="margin-top: 10px;">Start server: <code>node backend/server.js</code></p>
+            </div>
+        `;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.classList.remove("loading");
+    }
+}
+
+// Allow Enter key to search
+document.getElementById("source").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") searchFlights();
+});
+
+document.getElementById("destination").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") searchFlights();
+});
+</script>
+
+</body>
+</html>

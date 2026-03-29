@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Book Flight - SkyHigh Airlines</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+     body {
+    font-family: "Poppins", sans-serif;
+    background: url("https://png.pngtree.com/thumb_back/fw800/background/20240522/pngtree-airplane-wing-in-the-sky-over-the-clouds-image_15692941.jpg") no-repeat center center/cover;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Dark overlay for flight background */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 20, 40, 0.65); /* dark tint to improve readability */
+    backdrop-filter: blur(4px);       /* smooth blur effect */
+    z-index: 1;
+}
+
+    
+
+    .navbar {
+        background: rgba(10, 36, 64, 0.95);
+        padding: 15px 40px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        font-size: 22px;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+
+    .navbar a:hover {
+        color: #ff6b00;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 15px;
+    }
+
+    .nav-btn {
+        background: #ff6b00;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 16px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .nav-btn:hover {
+        background: #e65c00;
+        color: white;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 480px;
+        background: white;
+        padding: 35px;
+        margin: 100px auto 40px;
+        border-radius: 20px;
+        box-shadow: 0px 10px 40px rgba(0,0,0,0.3);
+        animation: slideUp 0.5s ease;
+        position: relative;
+        z-index: 10;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    h2 {
+        text-align: center;
+        color: #0a2440;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .required {
+        color: #ff6b00;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        font-family: "Poppins", sans-serif;
+        transition: all 0.3s;
+        background: #f9f9f9;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    input.error, select.error {
+        border-color: #ff4444;
+        background: #fff5f5;
+    }
+
+    .error-message {
+        color: #ff4444;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+    .date-time-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    button {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #ff6b00 0%, #ff8c00 100%);
+        border: none;
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(255, 107, 0, 0.4);
+    }
+
+    button:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .spinner {
+        display: none;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    button.loading .btn-text {
+        display: none;
+    }
+
+    button.loading .spinner {
+        display: block;
+    }
+
+    #message {
+        margin-top: 20px;
+        padding: 15px;
+        text-align: center;
+        font-weight: 500;
+        border-radius: 10px;
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    #message.show {
+        display: block;
+    }
+
+    #message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    #message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .booking-details {
+        background: #f0f4ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+    }
+
+    .booking-details.show {
+        display: block;
+        animation: slideUp 0.5s ease;
+    }
+
+    .booking-details h3 {
+        color: #0a2440;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #d0d9f0;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .detail-value {
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .icon {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .passenger-count {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .passenger-count button {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .passenger-count input {
+        text-align: center;
+        flex: 1;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 25px;
+            margin-top: 80px;
+        }
+
+        .date-time-group {
+            grid-template-columns: 1fr;
+        }
+
+        .navbar {
+            padding: 15px 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="index.html">✈️ SkyHigh Airlines</a>
+    <div class="nav-links">
+        <a href="flights.html" class="nav-btn">🔙 Back to Flights</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>✈️ Flight Booking</h2>
+    <p class="subtitle">Complete the form below to book your flight</p>
+    
+    <form id="bookingForm" onsubmit="bookFlight(event)">
+        <div class="form-group">
+            <label for="name">
+                <span class="icon">👤</span>
+                Passenger Full Name <span class="required">*</span>
+            </label>
+            <input 
+                type="text" 
+                id="name" 
+                placeholder="Enter full name as per ID" 
+                required 
+                autocomplete="name"
+                minlength="3"
+            />
+            <div class="error-message" id="nameError">Please enter a valid name (min 3 characters)</div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">
+                <span class="icon">📧</span>
+                Email Address <span class="required">*</span>
+            </label>
+            <input 
+                type="email" 
+                id="email" 
+                placeholder="your.email@example.com" 
+                required 
+                autocomplete="email"
+            />
+            <div class="error-message" id="emailError">Please enter a valid email address</div>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">
+                <span class="icon">📱</span>
+                Phone Number <span class="required">*</span>
+            </label>
+            <input 
+                type="tel" 
+                id="phone" 
+                placeholder="+1 (555) 123-4567" 
+                required 
+                autocomplete="tel"
+                pattern="[0-9+\-\s()]+"
+            />
+            <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+        </div>
+
+        <div class="form-group">
+            <label for="flight">
+                <span class="icon">🎫</span>
+                Flight Number <span class="required">*</span>
+            </label>
+            <input 
+                type="text" 
+                id="flight_no"
+                placeholder="e.g. SH123" 
+                required 
+                pattern="[A-Z]{2}[0-9]{3,4}"
+                style="text-transform: uppercase;"
+            />
+            <div class="error-message" id="flightError">Format: 2 letters + 3-4 digits (e.g., SH123)</div>
+        </div>
+
+        <div class="form-group">
+            <label for="source">
+                <span class="icon">🛫</span>
+                Departure From <span class="required">*</span>
+            </label>
+            <select id="source" required>
+                <option value="">Select departure city</option>
+                <option value="India">🇮🇳 India (DEL)</option>
+                <option value="USA">🇺🇸 USA (JFK)</option>
+                <option value="UK">🇬🇧 United Kingdom (LHR)</option>
+                <option value="France">🇫🇷 France (CDG)</option>
+                <option value="Germany">🇩🇪 Germany (FRA)</option>
+                <option value="Japan">🇯🇵 Japan (NRT)</option>
+                <option value="Australia">🇦🇺 Australia (SYD)</option>
+                <option value="UAE">🇦🇪 UAE (DXB)</option>
+                <option value="Singapore">🇸🇬 Singapore (SIN)</option>
+                <option value="Canada">🇨🇦 Canada (YYZ)</option>
+            </select>
+            <div class="error-message" id="sourceError">Please select a departure city</div>
+        </div>
+
+        <div class="form-group">
+            <label for="destination">
+                <span class="icon">🛬</span>
+                Arrival To <span class="required">*</span>
+            </label>
+            <select id="destination" required>
+                <option value="">Select arrival city</option>
+                <option value="India">🇮🇳 India (DEL)</option>
+                <option value="USA">🇺🇸 USA (JFK)</option>
+                <option value="UK">🇬🇧 United Kingdom (LHR)</option>
+                <option value="France">🇫🇷 France (CDG)</option>
+                <option value="Germany">🇩🇪 Germany (FRA)</option>
+                <option value="Japan">🇯🇵 Japan (NRT)</option>
+                <option value="Australia">🇦🇺 Australia (SYD)</option>
+                <option value="UAE">🇦🇪 UAE (DXB)</option>
+                <option value="Singapore">🇸🇬 Singapore (SIN)</option>
+                <option value="Canada">🇨🇦 Canada (YYZ)</option>
+            </select>
+            <div class="error-message" id="destinationError">Please select an arrival city</div>
+        </div>
+
+        <div class="date-time-group">
+            <div class="form-group">
+                <label for="date">
+                    <span class="icon">📅</span>
+                    Travel Date <span class="required">*</span>
+                </label>
+                <input 
+                    type="date" 
+                    id="date" 
+                    required 
+                />
+                <div class="error-message" id="dateError">Please select a valid date</div>
+            </div>
+
+            <div class="form-group">
+                <label for="passengers">
+                    <span class="icon">👥</span>
+                    Passengers <span class="required">*</span>
+                </label>
+                <input 
+                    type="number" 
+                    id="passengers" 
+                    min="1" 
+                    max="9" 
+                    value="1" 
+                    required 
+                />
+                <div class="error-message" id="passengersError">1-9 passengers allowed</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="class">
+                <span class="icon">💺</span>
+                Travel Class <span class="required">*</span>
+            </label>
+            <select id="class" required>
+                <option value="economy">Economy Class</option>
+                <option value="premium-economy">Premium Economy</option>
+                <option value="business">Business Class</option>
+                <option value="first">First Class</option>
+            </select>
+        </div>
+
+        <button type="submit" id="submitBtn">
+            <span class="btn-text">🎫 Confirm Booking</span>
+            <div class="spinner"></div>
+        </button>
+    </form>
+
+    <div id="message"></div>
+
+    <div class="booking-details" id="bookingDetails">
+        <h3>📋 Booking Confirmation</h3>
+        <div class="detail-row">
+            <span class="detail-label">Booking ID:</span>
+            <span class="detail-value" id="bookingId">-</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Passenger:</span>
+            <span class="detail-value" id="confirmName">-</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Flight:</span>
+            <span class="detail-value" id="confirmFlight">-</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Route:</span>
+            <span class="detail-value" id="confirmRoute">-</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Date:</span>
+            <span class="detail-value" id="confirmDate">-</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Class:</span>
+            <span class="detail-value" id="confirmClass">-</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Passengers:</span>
+            <span class="detail-value" id="confirmPassengers">-</span>
+        </div>
+    </div>
+</div>
+<script>
+
+async function bookFlight(event) {
+  event.preventDefault();
+
+  const bookingData = {
+    passenger_name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    flight_no: document.getElementById("flight_no").value,
+    source: document.getElementById("source").value,
+    destination: document.getElementById("destination").value,
+    travel_date: document.getElementById("date").value,
+    passengers: document.getElementById("passengers").value,
+    travel_class: document.getElementById("class").value,
+  };
+
+  console.log("Sending data to backend:", bookingData);
+
+  const button = document.getElementById("submitBtn");
+  button.disabled = true;
+  button.classList.add("loading");
+
+  try {
+    const response = await fetch("http://localhost:5000/book", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("✅ Booking Successful! Redirecting to your ticket...");
+      
+      // Redirect to ticket page with booking ID
+      window.location.href = `ticket.html?id=${result.booking_id}`;
+    } else {
+      alert("❌ Booking Failed: " + result.error);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("❌ Cannot connect to backend. Start server using: node backend/server.js");
+  }
+
+  button.disabled = false;
+  button.classList.remove("loading");
+}
+</script>
+
+</body>
+</html>

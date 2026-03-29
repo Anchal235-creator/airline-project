@@ -1,0 +1,445 @@
+/* RESET (No Changes) */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+
+body{
+  background:#f3f9ff;
+  color:#333;
+  overflow-x:hidden;
+}
+
+
+/* NAVBAR (No Changes) */
+.navbar{
+  padding:15px 8%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(15px);
+  box-shadow:0 4px 20px rgba(0,92,230,0.15);
+  position:sticky;
+  top:0;
+  z-index:1000;
+  transition:all 0.3s ease;
+}
+
+
+.logo{
+  font-size:26px;
+  font-weight:800;
+  background:linear-gradient(135deg, #005ce6 0%, #0080ff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  letter-spacing:1.5px;
+  transition:all 0.3s ease;
+  text-decoration:none;
+}
+
+.logo:hover{
+  transform:scale(1.05);
+  filter:drop-shadow(0 0 8px rgba(0,92,230,0.4));
+}
+
+
+/* ---------------------------------- */
+/* --- MODIFIED & NEW STYLES START --- */
+/* ---------------------------------- */
+
+
+/* HERO SECTION - MODIFIED */
+.welcome-hero{
+  text-align:center;
+  padding:150px 10%;
+  position:relative;
+  color:white;
+  z-index:2;
+  /* NEW: Added overflow:hidden to contain the zoom effect */
+  overflow:hidden; 
+}
+
+
+.welcome-hero h1{
+  font-size:70px;
+  font-weight:900;
+  margin-bottom:25px;
+  text-shadow: 3px 3px 15px rgba(0,0,0,0.9), 0 0 30px rgba(0,92,230,0.6), 0 0 50px rgba(0,92,230,0.3);
+  animation: popUp 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  letter-spacing: 3px;
+  text-transform:uppercase;
+}
+
+
+.welcome-hero p{
+  font-size:22px;
+  max-width:750px;
+  margin:auto;
+  font-weight:500;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.7);
+  animation: fadeUp 1.5s ease;
+  line-height:1.6;
+}
+
+
+/* BACKGROUND IMAGE - AIRPLANE COCKPIT */
+.welcome-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  /* Airplane cockpit view - immersive airline experience */
+  background-image: url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  /* Subtle zoom animation */
+  animation: kenBurnsZoom 20s ease-out forwards;
+  z-index:-2;
+}
+
+
+/* GRADIENT OVERLAY FOR DEPTH */
+.welcome-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  /* Gradient overlay for better text visibility and depth */
+  background:linear-gradient(135deg, rgba(0,92,230,0.4) 0%, rgba(0,0,0,0.6) 50%, rgba(0,20,60,0.7) 100%);
+  z-index:-1;
+}
+
+
+/* REMOVED .airplane styles as it doesn't fit the new design */
+/* .airplane{ ... } */
+
+
+
+/* FEATURES */
+.features{
+  padding:70px 8%;
+  text-align:center;
+}
+
+.features h2{
+  font-size:48px;
+  font-weight:800;
+  background:linear-gradient(135deg, #005ce6 0%, #0080ff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:25px;
+  position:relative;
+  display:inline-block;
+}
+
+.features h2::after{
+  content:'';
+  position:absolute;
+  bottom:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:80px;
+  height:4px;
+  background:linear-gradient(90deg, transparent, #005ce6, transparent);
+  border-radius:2px;
+}
+
+
+.feature-list{
+  display:flex;
+  gap:30px;
+  margin-top:35px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+
+.feature-item{
+  width:300px;
+  background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  padding:35px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,92,230,0.15);
+  transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border:2px solid rgba(0,92,230,0.1);
+  position:relative;
+  overflow:hidden;
+}
+
+.feature-item::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:linear-gradient(90deg, transparent, rgba(0,92,230,0.1), transparent);
+  transition:left 0.5s ease;
+}
+
+
+.feature-item:hover{
+  transform:translateY(-12px) scale(1.03);
+  box-shadow:0 20px 40px rgba(0,92,230,0.25);
+  border-color:rgba(0,92,230,0.3);
+}
+
+.feature-item:hover::before{
+  left:100%;
+}
+
+
+.feature-item i{
+  font-size:50px;
+  background:linear-gradient(135deg, #005ce6 0%, #0080ff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:18px;
+  display:inline-block;
+  transition:all 0.3s ease;
+}
+
+.feature-item:hover i{
+  transform:scale(1.2) rotateY(360deg);
+}
+
+.feature-item h3{
+  font-size:22px;
+  font-weight:700;
+  color:#333;
+  margin-bottom:12px;
+}
+
+.feature-item p{
+  color:#666;
+  line-height:1.6;
+  font-size:15px;
+}
+
+
+/* DESTINATIONS */
+.destinations{
+  text-align:center;
+  padding:70px 8%;
+  background:linear-gradient(135deg, #f3f9ff 0%, #e6f2ff 100%);
+}
+
+.destinations h2{
+  font-size:48px;
+  font-weight:800;
+  background:linear-gradient(135deg, #005ce6 0%, #0080ff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:30px;
+  position:relative;
+  display:inline-block;
+}
+
+.destinations h2::after{
+  content:'';
+  position:absolute;
+  bottom:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:80px;
+  height:4px;
+  background:linear-gradient(90deg, transparent, #005ce6, transparent);
+  border-radius:2px;
+}
+
+
+.destination-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:25px;
+  margin-top:30px;
+}
+
+
+.destination-card{
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,92,230,0.15);
+  transition:all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor:pointer;
+  position:relative;
+  border:2px solid transparent;
+}
+
+.destination-card:hover{
+  transform:translateY(-15px) scale(1.05);
+  box-shadow:0 20px 50px rgba(0,92,230,0.35);
+  border-color:rgba(0,92,230,0.3);
+}
+
+.destination-card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  transition:all 0.4s ease;
+}
+
+.destination-card:hover img{
+  transform:scale(1.15) rotate(2deg);
+  filter:brightness(1.15) saturate(1.2);
+}
+
+.destination-card h3{
+  padding:22px;
+  font-size:21px;
+  font-weight:700;
+  color:#333;
+  background:linear-gradient(180deg, white 0%, #f8fbff 100%);
+  transition:all 0.3s ease;
+}
+
+.destination-card:hover h3{
+  color:#005ce6;
+  transform:scale(1.05);
+}
+
+
+
+/* FOOTER (No Changes) */
+footer{
+  text-align:center;
+  padding:30px;
+  background:linear-gradient(135deg, #005ce6 0%, #003d99 100%);
+  color:white;
+  margin-top:50px;
+  box-shadow:0 -5px 20px rgba(0,92,230,0.2);
+}
+
+footer p{
+  margin-bottom:15px;
+  font-size:15px;
+  font-weight:500;
+}
+
+.social-links{
+  margin-top:15px;
+}
+
+
+footer a{
+  color:white;
+  margin:0 12px;
+  font-size:20px;
+  transition:all 0.3s ease;
+  display:inline-block;
+}
+
+footer a:hover{
+  transform:translateY(-5px) scale(1.2);
+  color:#80c0ff;
+  filter:drop-shadow(0 5px 10px rgba(255,255,255,0.3));
+}
+
+
+/* ---------------------------------- */
+/* --- MODIFIED KEYFRAMES START --- */
+/* ---------------------------------- */
+
+
+/* NEW: Subtle background zoom animation */
+@keyframes kenBurnsZoom{
+  from{
+    transform:scale(1.1);
+  }
+  to{
+    transform:scale(1);
+  }
+}
+
+
+/* REMOVED old cloud and plane animations */
+/* @keyframes cloudMove{ ... } */
+/* @keyframes planeFly{ ... } */
+
+
+
+/* ANIMATIONS */
+@keyframes fadeDown{
+  from{opacity:0; transform:translateY(-40px);}
+  to{opacity:1; transform:translateY(0);}
+} 
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(40px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* Pop-up animation for hero title */
+@keyframes popUp{
+  0%{
+    opacity:0;
+    transform:scale(0.5) translateY(-50px);
+  }
+  70%{
+    transform:scale(1.05) translateY(0);
+  }
+  100%{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+}
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: #0a2440;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nav-book-btn {
+  background: #ff6b00;
+  color: white;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.nav-book-btn:hover {
+  background: #e65c00;
+}
+
+
+/* Add this to your style.css file or in a <style> tag in the head */
+.nav-buttons a[href*="login"] {
+    background-color: #ff6b00; /* Orange color */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.nav-buttons a[href*="login"]:hover {
+    background-color: #e65c00; /* Darker orange on hover */
+}

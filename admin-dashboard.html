@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SkyHigh International</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+
+
+
+
+   /* PASTE HERE */
+   .analytics-section {
+     margin-top: 40px;
+     padding: 20px;
+     color: white;
+     font-family: Poppins, sans-serif;
+   }
+
+   .analytics-card {
+     background: #1f1f33;
+     padding: 20px;
+     margin: 15px 0;
+     border-radius: 12px;
+     box-shadow: 0 0 12px rgba(255,255,255,0.05);
+   }
+
+   .analytics-card h3 {
+     margin-bottom: 10px;
+     font-size: 20px;
+     color: #ff6b00;
+   }
+
+   .analytics-card p,
+   .analytics-card li {
+     font-size: 16px;
+     margin: 5px 0;
+   }
+
+   .analytics-card ul {
+     padding-left: 20px;
+   }
+
+   .analytics-table {
+     width: 100%;
+     border-collapse: collapse;
+     background: #1f1f33;
+     color: white;
+     margin-top: 10px;
+     border-radius: 12px;
+     overflow: hidden;
+   }
+
+   .analytics-table th {
+     background: #7b4397;
+     padding: 12px;
+   }
+
+   .analytics-table td {
+     padding: 12px;
+     background: #282845;
+   }
+
+
+        /* =============================== */
+        /* Dark Mode Variables             */
+        /* =============================== */
+        :root {
+            --color-bg-dark: #12121e; /* Deep Near-Black */
+            --color-card-dark: #282845; /* Dark Grey/Blue Card Background */
+            --color-navbar-dark: #1f1f33; /* Slightly lighter than BG */
+            --color-text-light: #e0e0e0; /* Light Grey Text */
+            --color-primary-dark: #0a2440;
+            --gradient-accent: linear-gradient(135deg, #7b4397, #dc2430); /* Nebula Gradient */
+            --shadow-glow: 0 0 15px rgba(123, 67, 151, 0.4);
+            --shadow-hover: 0 8px 30px rgba(123, 67, 151, 0.6);
+
+            /* Status Colors */
+            --status-high-bg: #28A745; 
+            --status-medium-bg: #FFC107;
+            --status-low-bg: #DC3545;
+
+            /* Glow behind active card – from your picture */
+            --glow-gradient: linear-gradient(135deg, #ff7de8, #b06bff);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: "Poppins", sans-serif; 
+            background: var(--color-bg-dark); 
+            min-height: 100vh; 
+            color: var(--color-text-light);
+        }
+        
+        /* =============================== */
+        /* Navbar                          */
+        /* =============================== */
+        .navbar { 
+            background: var(--color-navbar-dark); 
+            padding: 15px 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .navbar h1 { color: white; font-size: 24px; }
+        .nav-links { display: flex; gap: 10px; }
+        .navbar a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 8px 16px; 
+            background: #ff6b00; 
+            border-radius: 6px; 
+            transition: 0.3s; 
+            font-size: 14px;
+        }
+        .navbar a:hover { background: #e65c00; }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+        }
+        
+        /* =============================== */
+        /* Stat Cards                      */
+        /* =============================== */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+
+        
+        .stat-card { 
+            background: var(--color-card-dark); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-glow); 
+            transition: all 0.3s; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: var(--shadow-hover); 
+        }
+        .stat-icon { font-size: 40px; margin-bottom: 10px; }
+        .stat-value { font-size: 36px; font-weight: 700; color: white; margin-bottom: 5px; } 
+        .stat-label { color: var(--color-text-light); font-size: 14px; font-weight: 500; } 
+        
+        /* =============================== */
+        /* Tabs                            */
+        /* =============================== */
+        .tabs { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            background: var(--color-card-dark); 
+            padding: 10px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-glow); 
+        }
+        .tab { 
+            flex: 1; 
+            padding: 12px 20px; 
+            border: none; 
+            background: transparent; 
+            color: var(--color-text-light); 
+            font-weight: 600; 
+            font-size: 15px; 
+            cursor: pointer; 
+            border-radius: 16px; 
+            transition: all 0.3s; 
+        }
+        .tab.active { 
+            background: var(--gradient-accent); 
+            color: white; 
+            box-shadow: 0 3px 15px rgba(220, 36, 48, 0.4); 
+        }
+        .tab:hover:not(.active) { 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+        
+        /* =============================== */
+        /* Tab Content                     */
+        /* =============================== */
+        .tab-content { 
+            display: none; 
+            background: var(--color-card-dark); 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-glow); 
+        }
+        .tab-content.active { 
+            display: block; 
+            animation: fadeIn 0.3s ease; 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .section-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+        }
+        .section-header h2 { color: white; font-size: 24px; }
+        
+        /* =============================== */
+        /* Buttons                         */
+        /* =============================== */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-family: "Poppins", sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .btn-primary { 
+            background: var(--gradient-accent); 
+            color: white; 
+        }
+        .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(220, 36, 48, 0.5); 
+        }
+        
+        /* =============================== */
+        /* Search Input                    */
+        /* =============================== */
+        #routeSearch {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-text-light);
+            transition: all 0.3s;
+            border-radius: 12px;
+            min-width: 260px;
+        }
+        #routeSearch::placeholder { color: rgba(255, 255, 255, 0.4); }
+        #routeSearch:focus {
+            box-shadow: 0 0 10px rgba(123, 67, 151, 0.7);
+            border-color: #7b4397;
+            outline: none;
+        }
+
+        /* =============================== */
+        /* Route Metrics Cards             */
+        /* =============================== */
+        .route-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Wrapper to allow glow behind card */
+        .metric-card-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Glow behind the active card */
+   
+ .metric-card-glow {
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 22px;
+
+    /* Perfect pink→purple glow from your photo */
+    background: linear-gradient(135deg, #ff4fb2, #9b4dff);
+
+    /* Much tighter & denser glow */
+    filter: blur(16px);
+
+    opacity: 0;
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+
+
+        .metric-card {
+            background: var(--color-card-dark); 
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+            position: relative;
+            z-index: 2; /* above glow */
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* ACTIVE / CLICKED CARD */
+        .metric-card.active {
+            transform: translateY(-8px);
+            background: var(--color-card-dark); /* keep card dark, glow is behind */
+            color: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            border-color: white;
+            z-index: 3;
+        }
+
+        /* when card is active, show glow behind it */
+        .metric-card.active + .metric-card-glow {
+            opacity: 1;
+        }
+
+        .metric-header { 
+            font-weight: 600; 
+            font-size: 18px; 
+            color: white; 
+            margin-bottom: 5px; 
+        }
+        .metric-subheader { 
+            font-size: 12px; 
+            color: var(--color-text-light); 
+            margin-bottom: 15px; 
+        }
+        .metric-details { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+        .bookings-value { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: white; 
+            margin-bottom: 0px; 
+        }
+        .bookings-label { 
+            font-size: 12px; 
+            color: var(--color-text-light); 
+        }
+        
+        /* Status Label */
+        .status-label {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+            color: white; 
+            margin-top: 5px;
+            width: fit-content;
+        }
+
+        .status-high { background-color: var(--status-high-bg); } 
+        .status-medium { background-color: var(--status-medium-bg); color: #333; } 
+        .status-low, .status-very-low { background-color: var(--status-low-bg); } 
+        
+        /* Active card text overrides */
+        .metric-card.active .metric-header,
+        .metric-card.active .metric-subheader,
+        .metric-card.active .bookings-value,
+        .metric-card.active .bookings-label {
+            color: white !important;
+        }
+        .metric-card.active .status-label {
+            color: white !important;
+        }
+        .metric-card.active .status-medium {
+            background-color: #ffda6a;
+            color: #333 !important;
+        }
+
+        /* =============================== */
+        /* Circular "chart"                */
+        /* =============================== */
+        .chart-container {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .circular-chart {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.1); 
+            position: absolute;
+        }
+
+        .chart-text {
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: white;
+        }
+
+        .metric-card.active .circular-chart {
+            border-color: white !important; 
+        }
+        .metric-card.active .chart-text {
+            color: white !important;
+        }
+
+        /* =============================== */
+        /* Loading & Empty State           */
+        /* =============================== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-text-light);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #7b4397;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-text-light);
+        }
+        .empty-state-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .tabs { flex-direction: column; }
+            .section-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h1>🎛 Admin Dashboard</h1>
+    <div class="nav-links">
+        <a href="booking-details.html">📄 View Bookings</a>
+        <a href="index.html">🏠 Home</a>
+        <a href="admin-dashboard-analytics.html">📊 Analytics</a>
+
+    </div>
+</div>
+
+<div class="container">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">✈</div>
+            <div class="stat-value" id="totalFlights">0</div>
+            <div class="stat-label">Total International Flights</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🎫</div>
+            <div class="stat-value" id="totalBookings">0</div>
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-trend" id="bookingsTrend">↗ +12% this month</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="totalPassengers">0</div>
+            <div class="stat-label">Total Passengers</div>
+            <div class="stat-trend" id="passengersTrend">↗ +8% vs last week</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="totalRevenue">$0</div>
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-trend" id="revenueTrend">↗ +15% growth</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🌍</div>
+            <div class="stat-value" id="activeRoutes">0</div>
+            <div class="stat-label">Active Routes</div>
+            <div class="stat-trend" id="routesTrend">→ Stable</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('flights', event)">✈ International Route Status</button>
+        <button class="tab" onclick="switchTab('bookings', event)">🎫 Bookings</button>
+    </div>
+
+    <div id="flights-tab" class="tab-content active">
+        <div class="section-header">
+            <h2>Route Load Metrics</h2>
+            <input 
+                type="text" 
+                id="routeSearch" 
+                placeholder="Search flight numbers or routes" 
+                oninput="filterRouteMetrics()"
+            >
+        </div>
+        
+        <div id="flightsLoading" class="loading" style="display:none;">
+            <div class="spinner"></div>
+            <p>Loading international routes...</p>
+        </div>
+        
+        <div id="routeMetricsContainer" class="route-metrics-grid"></div>
+    </div>
+
+    <div id="bookings-tab" class="tab-content">
+        <div class="section-header">
+            <h2>Booking Management</h2>
+            <button class="btn btn-primary" onclick="loadBookings()">🔄 Refresh</button>
+        </div>
+        <div id="bookingsLoading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+        <div id="bookingsTable" class="table-container"></div>
+    </div>
+</div>
+
+
+
+<!-- 🔥 AGGREGATE SECTIONS (Add These After Stats Cards) -->
+
+
+
+
+
+
+<script>
+    // ==========================
+    // Mock International Flights
+    // ==========================
+    const internationalFlightsData = [
+        { flight_no: "SH103", source: "India", destination: "Dubai", time: "8:30 AM", seats: 25, load: 85, bookings: 153 }, 
+        { flight_no: "SH104", source: "Dubai", destination: "India", time: "2:15 PM", seats: 30, load: 72, bookings: 130 }, 
+        { flight_no: "SH105", source: "India", destination: "USA", time: "11:45 AM", seats: 15, load: 92, bookings: 166 }, 
+        { flight_no: "SH106", source: "USA", destination: "India", time: "6:20 PM", seats: 17, load: 88, bookings: 158 }, 
+        { flight_no: "SH107", source: "UK", destination: "France", time: "7:10 AM", seats: 10, load: 45, bookings: 81 }, 
+        { flight_no: "SH108", source: "France", destination: "UK", time: "5:45 PM", seats: 13, load: 58, bookings: 104 }, 
+        { flight_no: "SH109", source: "Germany", destination: "Italy", time: "9:30 AM", seats: 12, load: 65, bookings: 117 }, 
+        { flight_no: "SH110", source: "Italy", destination: "Germany", time: "3:50 PM", seats: 14, load: 78, bookings: 140 }, 
+        { flight_no: "SH111", source: "India", destination: "Canada", time: "1:25 PM", seats: 22, load: 81, bookings: 146 }, 
+        { flight_no: "SH112", source: "Canada", destination: "India", time: "9:00 PM", seats: 19, load: 40, bookings: 72 }, 
+        { flight_no: "SH113", source: "Germany", destination: "India", time: "3:50 PM", seats: 14, load: 68, bookings: 122 }, 
+        { flight_no: "SH114", source: "India", destination: "UK", time: "10:40 AM", seats: 21, load: 95, bookings: 171 }, 
+        { flight_no: "SH115", source: "UK", destination: "India", time: "6:10 PM", seats: 19, load: 35, bookings: 63 }, 
+        { flight_no: "SH116", source: "USA", destination: "France", time: "7:00 AM", seats: 20, load: 83, bookings: 149 }, 
+        { flight_no: "SH117", source: "France", destination: "USA", time: "11:20 AM", seats: 24, load: 70, bookings: 126 }, 
+        { flight_no: "SH118", source: "Dubai", destination: "USA", time: "9:15 AM", seats: 26, load: 98, bookings: 176 }, 
+        { flight_no: "SH119", source: "USA", destination: "Dubai", time: "4:15 PM", seats: 18, load: 60, bookings: 108 }, 
+        { flight_no: "SH120", source: "Germany", destination: "France", time: "2:30 PM", seats: 22, load: 55, bookings: 99 }, 
+        { flight_no: "SH121", source: "France", destination: "Germany", time: "6:45 PM", seats: 17, load: 48, bookings: 86 }, 
+        { flight_no: "SH122", source: "Canada", destination: "UK", time: "12:10 PM", seats: 16, load: 77, bookings: 139 }, 
+        { flight_no: "SH123", source: "UK", destination: "Canada", time: "8:25 AM", seats: 14, load: 25, bookings: 45 }, 
+        { flight_no: "SH124", source: "India", destination: "Italy", time: "3:00 PM", seats: 28, load: 90, bookings: 162 }, 
+        { flight_no: "SH125", source: "Italy", destination: "India", time: "7:50 AM", seats: 20, load: 75, bookings: 135 }, 
+        { flight_no: "SH126", source: "France", destination: "Dubai", time: "1:45 PM", seats: 15, load: 62, bookings: 112 }, 
+        { flight_no: "SH127", source: "Dubai", destination: "France", time: "10:30 PM", seats: 12, load: 42, bookings: 76 }, 
+        { flight_no: "SH128", source: "Germany", destination: "Canada", time: "5:05 PM", seats: 18, load: 50, bookings: 90 }, 
+        { flight_no: "SH129", source: "Canada", destination: "Germany", time: "8:55 AM", seats: 19, load: 30, bookings: 54 }, 
+        { flight_no: "SH130", source: "Italy", destination: "USA", time: "6:30 AM", seats: 22, load: 79, bookings: 142 }, 
+        { flight_no: "SH131", source: "USA", destination: "Italy", time: "9:40 PM", seats: 25, load: 84, bookings: 151 }, 
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => { 
+    loadStats(); 
+    renderRouteMetrics(internationalFlightsData);
+
+    // 🔥 Add these:
+    loadTotalBookingsDB();
+    loadClassWiseBookings();
+    loadPopularDestinations();
+    loadPassengerLoad();
+});
+
+    // Switch Tabs
+    function switchTab(tab, evt) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        evt.target.classList.add('active');
+
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+       document.getElementById(tab + '-tab').classList.add('active');
+        // Clear active state when switching
+        document.querySelectorAll('.metric-card').forEach(card => card.classList.remove('active'));
+        
+        if (tab === 'flights') {
+            renderRouteMetrics(internationalFlightsData);
+        } else if (tab === 'bookings') {
+            loadBookings();
+        }
+    }
+
+    // Load Factor helpers
+    function getLoadFactorStatus(loadFactor) {
+        if (loadFactor >= 80) return "High";
+        if (loadFactor >= 50) return "Medium";
+        if (loadFactor > 0) return "Low";
+        return "Very Low";
+    }
+
+    function getStatusClass(loadFactor) {
+        if (loadFactor >= 80) return "status-high";
+        if (loadFactor >= 50) return "status-medium";
+        if (loadFactor > 0) return "status-low";
+        return "status-very-low";
+    }
+
+    function getChartColor(loadFactor) {
+        if (loadFactor >= 80) return "var(--status-high-bg)";
+        if (loadFactor >= 50) return "var(--status-medium-bg)";
+        return "var(--status-low-bg)";
+    }
+
+    function getChartHTML(loadFactor, isActive) { 
+        const rotation = (100 - loadFactor) * 0.9 + 45; 
+        const color = getChartColor(loadFactor);
+        
+        // color for the missing side to fake a semi-gauge
+        const transparentColor = "rgba(255,255,255,0.04)";
+
+        return `
+            <div class="chart-container">
+                <div class="circular-chart" style="
+                    border-color: ${color} ${transparentColor} ${color} ${color};
+                    transform: rotate(${rotation}deg);
+                "></div>
+                <span class="chart-text">
+                    ${loadFactor}%
+                </span>
+            </div>
+        `;
+    }
+
+    // Render cards
+    function renderRouteMetrics(data) {
+        const container = document.getElementById('routeMetricsContainer');
+        document.getElementById('flightsLoading').style.display = 'none';
+        
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">✈</div>
+                    <h3>No International Routes Found Matching Search</h3>
+                </div>`;
+            return;
+        }
+
+        let html = '';
+        data.forEach(item => {
+            const statusText = getLoadFactorStatus(item.load);
+            const statusClass = getStatusClass(item.load);
+            
+            html += `
+                <div class="metric-card-wrapper">
+                    <div class="metric-card" onclick="activateCard(this)">
+                        <div class="metric-header">${item.flight_no} (${item.time})</div>
+                        <div class="metric-subheader">${item.source} → ${item.destination}</div>
+                        
+                        <div class="metric-details">
+                            <div>
+                                <div class="bookings-value">${item.bookings}</div>
+                                <div class="bookings-label">Bookings</div>
+                            </div>
+                            ${getChartHTML(item.load, false)}
+                        </div>
+                        <div class="status-label ${statusClass}">${statusText} Load</div>
+                    </div>
+                    <div class="metric-card-glow"></div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // Card click handler
+    function activateCard(clickedCard) {
+        document.querySelectorAll('.metric-card').forEach(card => card.classList.remove('active'));
+        clickedCard.classList.add('active');
+    }
+
+    // Filter cards
+    function filterRouteMetrics() {
+        const input = document.getElementById("routeSearch").value.toLowerCase();
+        
+        const filtered = internationalFlightsData.filter(f =>
+            f.flight_no.toLowerCase().includes(input) ||
+            f.source.toLowerCase().includes(input) ||
+            f.destination.toLowerCase().includes(input)
+        );
+
+        renderRouteMetrics(filtered);
+    }
+
+    // Stats (mock)
+    function loadStats() {
+        try {
+            document.getElementById('totalFlights').textContent = '29';
+            document.getElementById('totalBookings').textContent = '4,560';
+            document.getElementById('totalPassengers').textContent = '7,150';
+            document.getElementById('totalRevenue').textContent = '$1,200,000';
+            document.getElementById('activeRoutes').textContent = '10';
+        } catch (error) { 
+            console.error('Error in loadStats:', error);
+        }
+    }
+
+    // Bookings tab (placeholder)
+    function loadBookings() {
+    const loading = document.getElementById('bookingsLoading');
+    const container = document.getElementById('bookingsTable');
+
+    loading.style.display = 'block';
+    container.innerHTML = "";
+
+    fetch("http://127.0.0.1:5000/join/user-bookings")
+        .then(res => res.json())
+        .then(data => {
+            loading.style.display = "none";
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">😕</div>
+                        <h3>No Join Records Found</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            let tableHTML = `
+                <table style="
+                    width:100%;
+                    border-collapse: collapse;
+                    background:#1f1f33;
+                    color:white;
+                    border-radius:12px;
+                    overflow:hidden;
+                ">
+                    <thead>
+                        <tr style="background:#7b4397;">
+                            <th style="padding:12px;">User</th>
+                            <th style="padding:12px;">Email</th>
+                            <th style="padding:12px;">Booking ID</th>
+                            <th style="padding:12px;">Flight No</th>
+                            <th style="padding:12px;">Travel Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach(row => {
+                tableHTML += `
+                    <tr style="background:#282845;">
+                        <td style="padding:10px;">${row.user_name}</td>
+                        <td style="padding:10px;">${row.user_email}</td>
+                        <td style="padding:10px;">${row.booking_id}</td>
+                        <td style="padding:10px;">${row.flight_no}</td>
+                        <td style="padding:10px;">${row.travel_date}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += "</tbody></table>";
+            container.innerHTML = tableHTML;
+        })
+        .catch(err => {
+            loading.style.display = "none";
+            container.innerHTML = `<p style="color:red;">Error loading join data</p>`;
+        });
+}
+
+// ===============================
+// TOTAL BOOKINGS
+// ===============================
+function loadTotalBookingsDB() {
+  fetch("http://127.0.0.1:5000/stats/total-bookings")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("totalBookingsDB").textContent =
+        data.total_bookings;
+    });
+}
+
+// ===============================
+// CLASS-WISE BOOKINGS
+// ===============================
+function loadClassWiseBookings() {
+  fetch("http://127.0.0.1:5000/stats/class-wise-bookings")
+    .then(res => res.json())
+    .then(data => {
+      let html = "";
+      data.forEach(row => {
+        html += `<p>${row.travel_class}: <strong>${row.total}</strong></p>`;
+      });
+      document.getElementById("classBreakdown").innerHTML = html;
+    });
+}
+
+// ===============================
+// POPULAR DESTINATIONS
+// ===============================
+function loadPopularDestinations() {
+  fetch("http://127.0.0.1:5000/stats/popular-destinations")
+    .then(res => res.json())
+    .then(data => {
+      let html = "";
+      data.forEach(row => {
+        html += `<li>${row.destination} — ${row.total_flights} bookings</li>`;
+      });
+      document.getElementById("popularDestinations").innerHTML = html;
+    });
+}
+
+// ===============================
+// PASSENGER LOAD PER FLIGHT
+// ===============================
+function loadPassengerLoad() {
+  fetch("http://127.0.0.1:5000/stats/passenger-load")
+    .then(res => res.json())
+    .then(data => {
+      let html = "";
+      data.forEach(row => {
+        html += `
+          <tr>
+            <td>${row.flight_no}</td>
+            <td>${row.total_passengers}</td>
+          </tr>
+        `;
+      });
+      document.getElementById("passengerLoadTable").innerHTML = html;
+    });
+}
+
+
+
+</script>
+</body>
+</html>

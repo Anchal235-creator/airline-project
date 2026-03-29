@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Booking - SkyHigh Airlines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: url("https://tse1.mm.bing.net/th/id/OIP.vUs6pNzK5GUinjL-WaoP6AHaEP?rs=1&pid=ImgDetMain&o=7&rm=3") no-repeat center center/cover;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dark overlay for background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 20, 40, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        
+        .navbar {
+            background: rgba(10, 36, 64, 0.95);
+            padding: 15px 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #ff6b00;
+        }
+
+        .nav-btn {
+            background: #ff6b00;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .nav-btn:hover {
+            background: #e65c00;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: white;
+            padding: 40px;
+            margin: 120px auto 40px;
+            border-radius: 20px;
+            box-shadow: 0px 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header h1 {
+            color: #0a2440;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .search-box {
+            margin-bottom: 25px;
+        }
+
+        .search-box label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: "Poppins", sans-serif;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group .icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #999;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(22, 163, 74, 0.4);
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn.loading .btn-text {
+            display: none;
+        }
+
+        .btn.loading .spinner {
+            display: block;
+        }
+
+        .details {
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .details.show {
+            display: block;
+        }
+
+        .details-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .details-header h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .details-header .booking-id {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: right;
+        }
+
+        .route-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .route-arrow {
+            color: #ff6b00;
+            font-size: 18px;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid #fcc;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 25px;
+                margin-top: 100px;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="index.html">✈️ SkyHigh Airlines</a>
+    <a href="admin-dashboard.html" class="nav-btn">🔙 Back to Admin</a>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>🔍 Check Your Booking</h1>
+        <p>Enter your booking ID to view flight details</p>
+    </div>
+
+    <div class="search-box">
+        <label for="bookingId">🎫 Booking ID</label>
+        <div class="input-group">
+            <input 
+                type="number" 
+                id="bookingId" 
+                placeholder="Enter your booking ID"
+                onkeypress="if(event.key === 'Enter') getBookingDetails()"
+            >
+            <span class="icon">#</span>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" id="searchBtn" onclick="getBookingDetails()">
+        <span class="btn-text">🔎 Search Booking</span>
+        <div class="spinner"></div>
+    </button>
+
+    <div class="error-message" id="errorMessage">
+        ❌ Booking not found. Please check your booking ID and try again.
+    </div>
+
+    <div class="details" id="details">
+        <div class="success-badge">✅ Booking Found</div>
+        
+        <div class="details-header">
+            <h3>BOOKING REFERENCE</h3>
+            <div class="booking-id" id="displayBookingId">-</div>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>👤</span>
+                Passenger Name
+            </span>
+            <span class="detail-value" id="passengerName">-</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>📧</span>
+                Email Address
+            </span>
+            <span class="detail-value" id="email">-</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>📱</span>
+                Phone Number
+            </span>
+            <span class="detail-value" id="phone">-</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>🎫</span>
+                Flight Number
+            </span>
+            <span class="detail-value" id="flightNo">-</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>🗺️</span>
+                Route
+            </span>
+            <div class="route-display">
+                <span id="source">-</span>
+                <span class="route-arrow">✈️</span>
+                <span id="destination">-</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>📅</span>
+                Travel Date
+            </span>
+            <span class="detail-value" id="travelDate">-</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>💺</span>
+                Travel Class
+            </span>
+            <span class="detail-value" id="travelClass">-</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">
+                <span>👥</span>
+                Number of Passengers
+            </span>
+            <span class="detail-value" id="passengers">-</span>
+        </div>
+    </div>
+
+    <button class="btn btn-download" id="downloadBtn" onclick="downloadTicket()">
+        📄 Download Ticket PDF
+    </button>
+</div>
+
+<script>
+    async function getBookingDetails() {
+        const id = document.getElementById("bookingId").value;
+        const detailsDiv = document.getElementById("details");
+        const errorDiv = document.getElementById("errorMessage");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const searchBtn = document.getElementById("searchBtn");
+
+        // Hide previous results
+        detailsDiv.classList.remove("show");
+        errorDiv.classList.remove("show");
+        downloadBtn.style.display = "none";
+
+        if (!id) {
+            alert("⚠️ Please enter a booking ID");
+            return;
+        }
+
+        // Show loading state
+        searchBtn.disabled = true;
+        searchBtn.classList.add("loading");
+
+        try {
+            const response = await fetch(`http://localhost:5000/bookings/${id}`);
+
+            if (!response.ok) {
+                throw new Error("Booking not found");
+            }
+
+            const data = await response.json();
+
+            // Populate details
+            document.getElementById("displayBookingId").textContent = `#${id}`;
+            document.getElementById("passengerName").textContent = data.passenger_name;
+            document.getElementById("email").textContent = data.email;
+            document.getElementById("phone").textContent = data.phone;
+            document.getElementById("flightNo").textContent = data.flight_no;
+            document.getElementById("source").textContent = data.source;
+            document.getElementById("destination").textContent = data.destination;
+            
+            // Format date
+            const travelDate = new Date(data.travel_date);
+            const formattedDate = travelDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById("travelDate").textContent = formattedDate;
+            
+            // Capitalize travel class
+            const travelClass = data.travel_class
+                .split('-')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            document.getElementById("travelClass").textContent = travelClass;
+            
+            document.getElementById("passengers").textContent = data.passengers;
+
+            // Show details and download button
+            detailsDiv.classList.add("show");
+            downloadBtn.style.display = "block";
+
+        } catch (error) {
+            console.error("Error:", error);
+            errorDiv.classList.add("show");
+        } finally {
+            // Remove loading state
+            searchBtn.disabled = false;
+            searchBtn.classList.remove("loading");
+        }
+    }
+
+    function downloadTicket() {
+        const id = document.getElementById("bookingId").value;
+        window.location.href = `http://localhost:5000/download/${id}`;
+    }
+</script>
+
+</body>
+</html>

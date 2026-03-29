@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
+
+    body, html { height:100%; overflow: hidden; }
+
+    /* SAME BACKGROUND */
+    .bg-sky {
+      position: fixed; inset: 0;
+      background: linear-gradient(-45deg, #001b4a, #004e92, #ff7e5f, #feb47b);
+      background-size: 400% 400%;
+      animation: skyMove 15s ease infinite;
+      z-index: -1;
+    }
+
+    @keyframes skyMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .overlay {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+
+    /* SAME TICKET CARD */
+    .ticket {
+      width: 380px;
+      background: #fdfdfd;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      overflow: hidden;
+      animation: slideIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --notch-size: 20px;
+      mask-image: radial-gradient(circle at left 78%, transparent var(--notch-size), black calc(var(--notch-size) + 1px)),
+                  radial-gradient(circle at right 78%, transparent var(--notch-size), black calc(var(--notch-size) + 1px));
+      -webkit-mask-image: radial-gradient(circle at 0 78%, transparent var(--notch-size), black calc(var(--notch-size) + 0.5px)),
+                          radial-gradient(circle at 100% 78%, transparent var(--notch-size), black calc(var(--notch-size) + 0.5px));
+      mask-composite: intersect; 
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(50px) rotate(-5deg); opacity: 0; }
+      to { transform: translateY(0) rotate(0); opacity: 1; }
+    }
+
+    /* Admin header – same theme, different label */
+    .ticket-header {
+      background-color: #00205b; 
+      padding: 25px 30px 20px;
+      color: white;
+      border-bottom: 4px solid #ffb400;
+    }
+
+    .airline-brand {
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: 2px;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .flight-class {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    .ticket-body { padding: 30px; }
+
+    .input-group { margin-bottom: 20px; }
+
+    .input-group label {
+      display: block;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #888;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .input-group input {
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #ddd;
+      background: transparent;
+      padding: 5px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #00205b;
+      transition: 0.3s;
+      outline: none;
+    }
+
+    .input-group input:focus { border-color: #ffb400; }
+
+    .divider {
+      border-top: 2px dashed #ccc;
+      margin: 20px -30px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #00205b;
+      color: white;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button:hover {
+      background-color: #00338d;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,32,91,0.3);
+    }
+
+    .barcode-strip {
+      height: 35px;
+      margin-top: 25px;
+      background: repeating-linear-gradient(
+        90deg, #333, #333 2px, transparent 2px, transparent 4px,
+        #333 4px, #333 8px, transparent 8px, transparent 9px
+      );
+      opacity: 0.7;
+    }
+
+    .small {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .small a {
+      color: #00205b;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+.nav-buttons a[href*="login"] {
+    background-color: #ff6b00;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.nav-buttons a[href*="login"]:hover {
+    background-color: #e65c00;
+}
+  </style>
+</head>
+
+<body>
+
+<div class="bg-sky"></div>
+
+<div class="overlay">
+  <div class="ticket">
+
+    <div class="ticket-header">
+      <div class="airline-brand">
+        <span>SKY HIGH</span>
+        <span style="font-size:18px;">🛡️</span>
+      </div>
+      <div class="flight-class">Admin Login Portal</div>
+    </div>
+
+    <div class="ticket-body">
+      <form id="adminForm" onsubmit="return adminLogin(event)">
+
+        <div class="input-group">
+          <label for="adminID">Admin ID</label>
+          <input type="text" id="adminID" required />
+        </div>
+
+        <div class="input-group">
+          <label for="adminPass">Password</label>
+          <input type="password" id="adminPass" required />
+        </div>
+
+        <div class="divider"></div>
+
+        <button>Login</button>
+
+        <div class="barcode-strip"></div>
+
+        <div class="small">
+          Not a passenger login? <a href="login.html">User Login</a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.getElementById("adminForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById("adminID").value;
+    const password = document.getElementById("adminPass").value;
+
+    try {
+        const res = await fetch("http://localhost:5000/admin/login", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) throw new Error("Invalid Admin Credentials");
+
+        window.location.href = "admin-dashboard.html";
+
+    } catch (err) {
+        alert("Invalid Admin Credentials!");
+    }
+});
+</script>
+
+</body>
+</html>

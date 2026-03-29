@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics – SkyHigh International</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* =============================== */
+    /* Dark Theme + Starfield          */
+    /* =============================== */
+    :root {
+      --color-bg-dark: #050510;
+      --color-card-glass: rgba(255, 255, 255, 0.06);
+      --color-navbar-dark: #070712;
+      --color-text-light: #e0e0e0;
+      --color-primary: #ff6b00;
+      --gradient-accent: linear-gradient(135deg, #7b4397, #dc2430);
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.75);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--color-bg-dark);
+      min-height: 100vh;
+      color: var(--color-text-light);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Starfield background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -60px;
+      z-index: -1;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.45), transparent 60%),
+        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.35), transparent 60%),
+        radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.35), transparent 60%),
+        radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.35), transparent 60%),
+        radial-gradient(2px 2px at 20% 90%, rgba(255,255,255,0.25), transparent 55%),
+        radial-gradient(2px 2px at 90% 80%, rgba(255,255,255,0.25), transparent 55%);
+      opacity: 0.7;
+      animation: starDrift 60s linear infinite;
+    }
+
+    @keyframes starDrift {
+      from { transform: translate3d(0, 0, 0); }
+      to   { transform: translate3d(-80px, -40px, 0); }
+    }
+
+    /* =============================== */
+    /* Navbar                          */
+    /* =============================== */
+    .navbar {
+      background: rgba(7, 7, 18, 0.95);
+      padding: 14px 40px;
+      box-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .navbar h1 {
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .navbar a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: rgba(255, 107, 0, 0.9);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar a:hover {
+      background: #ff8533;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(255, 133, 51, 0.55);
+    }
+
+    /* =============================== */
+    /* Layout                          */
+    /* =============================== */
+    .container {
+      max-width: 1300px;
+      margin: 25px auto 40px;
+      padding: 0 18px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .badge-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+    }
+
+    /* =============================== */
+    /* Top Stat Row – Glassmorphism    */
+    /* =============================== */
+    .top-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-chip {
+      background: var(--color-card-glass);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(15px);
+    }
+
+    .stat-chip::before {
+      content: "";
+      position: absolute;
+      top: -40%;
+      left: -20%;
+      width: 140%;
+      height: 200%;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .stat-chip-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
+    }
+
+    .stat-chip-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .stat-chip-meta {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    /* =============================== */
+    /* Chart Cards – Glassmorphism     */
+    /* =============================== */
+    .charts-column {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .chart-card {
+      background: var(--color-card-glass);
+      border-radius: 22px;
+      padding: 20px 20px 22px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeInUp 0.7s ease forwards;
+      backdrop-filter: blur(15px);
+    }
+
+    .chart-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at top right, rgba(123, 67, 151, 0.22), transparent 60%),
+        radial-gradient(circle at bottom left, rgba(220, 36, 48, 0.15), transparent 65%);
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .chart-card:nth-child(1) { animation-delay: 0.05s; }
+    .chart-card:nth-child(2) { animation-delay: 0.15s; }
+    .chart-card:nth-child(3) { animation-delay: 0.25s; }
+    .chart-card:nth-child(4) { animation-delay: 0.35s; }
+    .chart-card:nth-child(5) { animation-delay: 0.45s; }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .chart-subtitle {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      z-index: 2;
+      padding-top: 6px;
+    }
+
+    canvas {
+      max-height: 320px;
+    }
+
+    /* =============================== */
+    /* Filters Card                    */
+    /* =============================== */
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.8;
+      margin-bottom: 4px;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(7, 7, 18, 0.7);
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .filter-input::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .filter-input:focus {
+      border-color: #ff6b00;
+      box-shadow: 0 0 0 1px rgba(255, 107, 0, 0.5);
+      background: rgba(7, 7, 18, 0.9);
+    }
+
+    .btn-reset {
+      margin-top: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 500;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .small-note {
+      font-size: 11px;
+      opacity: 0.75;
+      margin-top: 6px;
+    }
+
+    /* =============================== */
+    /* Animations                      */
+    /* =============================== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive tweak */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 12px 18px;
+      }
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <h1>📊 SkyHigh Analytics</h1>
+    <div class="nav-links">
+      <a href="admin-dashboard.html">📺 Dashboard</a>
+      <a href="booking-details.html">📄 View Bookings</a>
+      <a href="index.html">🏠 Home</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- HEADER -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">Route & Booking Insights</div>
+        <div class="page-subtitle">Glassmorphism analytics layer with live MySQL data.</div>
+      </div>
+      <div class="badge-pill">
+        Live data • auto-refreshed on page load
+      </div>
+    </div>
+
+    <!-- TOP STAT ROW -->
+    <div class="top-stats">
+      <div class="stat-chip">
+        <div class="stat-chip-label">Total Bookings</div>
+        <div class="stat-chip-value" id="statTotalBookings">–</div>
+        <div class="stat-chip-meta">Pulled from /stats/total-bookings</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-chip-label">Top Destination</div>
+        <div class="stat-chip-value" id="statTopDestination">–</div>
+        <div class="stat-chip-meta">Based on total bookings per destination</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-chip-label">Busiest Flight</div>
+        <div class="stat-chip-value" id="statTopFlight">–</div>
+        <div class="stat-chip-meta">Highest total passengers per flight</div>
+      </div>
+    </div>
+
+    <!-- CHARTS COLUMN (Full width stacked) -->
+    <div class="charts-column">
+      <!-- Donut Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Class-wise Booking Distribution</div>
+          <div class="chart-subtitle">Breakdown of bookings by travel class</div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="classDonutChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Most Popular Destinations</div>
+          <div class="chart-subtitle">Total bookings grouped by destination</div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="destinationBarChart"></canvas>
+        </div>
+      </div>
+
+      <!-- NEW: Monthly Trend Line Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Monthly Booking Trend</div>
+          <div class="chart-subtitle">Mock time-series data for visual trend analysis</div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="monthlyTrendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Pie Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Passenger Load per Flight</div>
+          <div class="chart-subtitle">Total passengers per flight number</div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="passengerPieChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Interactive Filters</div>
+          <div class="chart-subtitle">Frontend filters that dynamically update the charts</div>
+        </div>
+        <div class="chart-wrapper">
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label for="destinationFilter">Destination Search</label>
+              <input
+                type="text"
+                id="destinationFilter"
+                class="filter-input"
+                placeholder="e.g. Dubai, Canada, Italy..."
+              />
+            </div>
+            <div class="filter-group">
+              <label for="flightFilter">Flight No Search</label>
+              <input
+                type="text"
+                id="flightFilter"
+                class="filter-input"
+                placeholder="e.g. SH120, SH131..."
+              />
+            </div>
+          </div>
+
+          <button class="btn-reset" id="resetFiltersBtn">Reset Filters</button>
+
+          <p class="small-note">
+            🔎 Filters are applied on the frontend:<br />
+            • Destination filter updates the bar chart<br />
+            • Flight No filter updates the passenger load pie chart<br />
+            (Class donut always shows full overview.)
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================
+    // API BASE
+    // ==========================
+    const API_BASE = "http://127.0.0.1:5000";
+
+    // Chart instances
+    let classDonutChart = null;
+    let destinationBarChart = null;
+    let passengerPieChart = null;
+    let monthlyTrendChart = null;
+
+    // Store original data for filters
+    let originalClassData = [];
+    let originalDestinationData = [];
+    let originalPassengerData = [];
+
+    // Mock monthly time-series data
+    const originalMonthlyData = [
+      { month_year: "Jan 2024", monthly_bookings: 120 },
+      { month_year: "Feb 2024", monthly_bookings: 150 },
+      { month_year: "Mar 2024", monthly_bookings: 180 },
+      { month_year: "Apr 2024", monthly_bookings: 170 },
+      { month_year: "May 2024", monthly_bookings: 210 },
+      { month_year: "Jun 2024", monthly_bookings: 260 },
+      { month_year: "Jul 2024", monthly_bookings: 240 },
+      { month_year: "Aug 2024", monthly_bookings: 280 },
+      { month_year: "Sep 2024", monthly_bookings: 300 },
+      { month_year: "Oct 2024", monthly_bookings: 330 },
+      { month_year: "Nov 2024", monthly_bookings: 360 },
+      { month_year: "Dec 2024", monthly_bookings: 390 }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadAnalyticsData();
+      setupFilters();
+    });
+
+    async function loadAnalyticsData() {
+      try {
+        const [
+          totalBookingsRes,
+          classRes,
+          destinationRes,
+          passengerRes
+        ] = await Promise.all([
+          fetch(`${API_BASE}/stats/total-bookings`).then(r => r.json()),
+          fetch(`${API_BASE}/stats/class-wise-bookings`).then(r => r.json()),
+          fetch(`${API_BASE}/stats/popular-destinations`).then(r => r.json()),
+          fetch(`${API_BASE}/stats/passenger-load`).then(r => r.json())
+        ]);
+
+        // Save originals
+        originalClassData = classRes || [];
+        originalDestinationData = destinationRes || [];
+        originalPassengerData = passengerRes || [];
+
+        // Top stats
+        if (totalBookingsRes && typeof totalBookingsRes.total_bookings !== "undefined") {
+          document.getElementById("statTotalBookings").textContent =
+            totalBookingsRes.total_bookings;
+        }
+
+        if (originalDestinationData.length > 0) {
+          const topDest = originalDestinationData[0]; // ordered DESC in SQL
+          document.getElementById("statTopDestination").textContent =
+            `${topDest.destination} (${topDest.total_flights})`;
+        }
+
+        if (originalPassengerData.length > 0) {
+          const topFlight = originalPassengerData[0]; // ordered DESC in SQL
+          document.getElementById("statTopFlight").textContent =
+            `${topFlight.flight_no} (${topFlight.total_passengers})`;
+        }
+
+        // Render charts
+        renderClassDonut(originalClassData);
+        renderDestinationBar(originalDestinationData);
+        renderPassengerPie(originalPassengerData);
+        renderMonthlyTrend(originalMonthlyData); // ⬅️ new line chart
+      } catch (err) {
+        console.error("Error loading analytics:", err);
+      }
+    }
+
+    // ==========================
+    // RENDER CHARTS
+    // ==========================
+
+    function renderClassDonut(data) {
+      const ctx = document.getElementById("classDonutChart").getContext("2d");
+
+      if (classDonutChart) classDonutChart.destroy();
+
+      const labels = data.map(row => row.travel_class);
+      const values = data.map(row => row.total);
+
+      classDonutChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels,
+          datasets: [
+            {
+              data: values,
+              backgroundColor: [
+                "#ff6b00",
+                "#ffb347",
+                "#7b4397",
+                "#1cb5e0",
+                "#3ae7ab",
+                "#ff4f81"
+              ],
+              borderWidth: 0
+            }
+          ]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: {
+                color: "#ffffff",
+                font: { size: 12 }
+              }
+            }
+          },
+          animation: {
+            animateRotate: true,
+            animateScale: true
+          }
+        }
+      });
+    }
+
+    function renderDestinationBar(data) {
+      const ctx = document.getElementById("destinationBarChart").getContext("2d");
+      if (destinationBarChart) destinationBarChart.destroy();
+
+      const labels = data.map(row => row.destination);
+      const values = data.map(row => row.total_flights);
+
+      destinationBarChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Bookings",
+              data: values,
+              backgroundColor: "#ff6b00"
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: { color: "#ffffff" },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: "#ffffff" },
+              grid: { color: "rgba(255,255,255,0.1)" },
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: "#ffffff"
+              }
+            }
+          },
+          animation: {
+            duration: 700,
+            easing: "easeOutCubic"
+          }
+        }
+      });
+    }
+
+    function renderPassengerPie(data) {
+      const ctx = document.getElementById("passengerPieChart").getContext("2d");
+      if (passengerPieChart) passengerPieChart.destroy();
+
+      const labels = data.map(row => row.flight_no);
+      const values = data.map(row => row.total_passengers);
+
+      passengerPieChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels,
+          datasets: [
+            {
+              data: values,
+              backgroundColor: [
+                "#ff6b00",
+                "#ffb347",
+                "#7b4397",
+                "#1cb5e0",
+                "#3ae7ab",
+                "#ff4f81",
+                "#00b4d8",
+                "#f72585"
+              ],
+              borderWidth: 0
+            }
+          ]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: { color: "#ffffff" }
+            }
+          },
+          animation: {
+            duration: 700,
+            easing: "easeOutCubic"
+          }
+        }
+      });
+    }
+
+    // NEW: Monthly trend line chart with gradient fill
+    function renderMonthlyTrend(data) {
+      const canvas = document.getElementById("monthlyTrendChart");
+      const ctx = canvas.getContext("2d");
+      if (monthlyTrendChart) monthlyTrendChart.destroy();
+
+      const labels = data.map(row => row.month_year);
+      const values = data.map(row => row.monthly_bookings);
+
+      // gradient under line
+      const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+      gradient.addColorStop(0, "rgba(58, 231, 171, 0.45)");
+      gradient.addColorStop(1, "rgba(58, 231, 171, 0)");
+
+      monthlyTrendChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Monthly Bookings",
+              data: values,
+              borderColor: "#3ae7ab",
+              backgroundColor: gradient,
+              borderWidth: 2,
+              fill: true,
+              tension: 0.35,
+              pointRadius: 3,
+              pointBackgroundColor: "#3ae7ab",
+              pointHoverRadius: 5
+            }
+          ]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: { color: "#ffffff" },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: "#ffffff" },
+              grid: { color: "rgba(255,255,255,0.1)" },
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              labels: { color: "#ffffff" }
+            }
+          },
+          animation: {
+            duration: 800,
+            easing: "easeOutCubic"
+          }
+        }
+      });
+    }
+
+    // ==========================
+    // FILTERS (Frontend only)
+    // ==========================
+
+    function setupFilters() {
+      const destinationInput = document.getElementById("destinationFilter");
+      const flightInput = document.getElementById("flightFilter");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+
+      if (destinationInput) {
+        destinationInput.addEventListener("input", () => {
+          applyDestinationFilter(destinationInput.value);
+        });
+      }
+
+      if (flightInput) {
+        flightInput.addEventListener("input", () => {
+          applyFlightFilter(flightInput.value);
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (destinationInput) destinationInput.value = "";
+          if (flightInput) flightInput.value = "";
+          // Reset charts to original data
+          renderDestinationBar(originalDestinationData);
+          renderPassengerPie(originalPassengerData);
+        });
+      }
+    }
+
+    function applyDestinationFilter(text) {
+      const query = text.trim().toLowerCase();
+      if (!query) {
+        renderDestinationBar(originalDestinationData);
+        return;
+      }
+      const filtered = originalDestinationData.filter(row =>
+        row.destination.toLowerCase().includes(query)
+      );
+      renderDestinationBar(filtered);
+    }
+
+    function applyFlightFilter(text) {
+      const query = text.trim().toLowerCase();
+      if (!query) {
+        renderPassengerPie(originalPassengerData);
+        return;
+      }
+      const filtered = originalPassengerData.filter(row =>
+        row.flight_no.toLowerCase().includes(query)
+      );
+      renderPassengerPie(filtered);
+    }
+
+
+    // Auto-refresh bookings every 5 seconds
+setInterval(() => {
+    loadBookings();
+}, 5000);
+
+  </script>
+</body>
+</html>
